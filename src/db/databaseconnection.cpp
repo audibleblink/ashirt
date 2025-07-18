@@ -148,8 +148,12 @@ QList<model::Tag> DatabaseConnection::getFullTagsForEvidenceIDs(
 
 bool DatabaseConnection::setEvidenceTags(const QList<model::Tag> &newTags, qint64 evidenceID)
 {
-  if(newTags.isEmpty())
-      return false;
+  if(newTags.isEmpty()) {
+    // If no tags are provided, delete all tags for this evidence
+    auto qDelStr = QStringLiteral("DELETE FROM tags WHERE evidence_id = ?");
+    auto a = executeQuery(_db, qDelStr, {evidenceID});
+    return (a.lastError().type() == QSqlError::NoError);
+  }
 
   QVariantList newTagIds;
   for (const auto &tag : newTags)

@@ -1,3 +1,7 @@
 # IDE Projects/data
 *.pro.user
 .vscode
+
+# Build artifacts
+build/
+cmake-build-*/
